@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Green Dot • Unlimited Banking</title>
+    <!-- Font Awesome 6 (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #d9ead3;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* main app card – fits any screen like native app */
+        .app-container {
+            width: 100%;
+            max-width: 480px; /* comfortable phone width, but fluid */
+            margin: 0 auto;
+            background: #ffffff;
+            box-shadow: 0 30px 60px -15px rgba(0, 60, 0, 0.4);
+            border-radius: 40px 40px 0 0;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .page {
+            flex: 1;
+            padding: 26px 22px;
+            display: none;
+            background: #ffffff;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* ----- green dot official logo (dot + wordmark) ----- */
+        .gd-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .gd-logo .dot {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(145deg, #00b140, #00802c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 12px -4px rgba(0,100,0,0.5), inset 0 -2px 0 #c0ffc0;
+        }
+        .gd-logo .dot span {
+            color: white;
+            font-weight: 800;
+            font-size: 28px;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 3px #004d1a;
+        }
+        .gd-logo .wordmark {
+            font-size: 32px;
+            font-weight: 700;
+            color: #174523;
+            letter-spacing: -0.5px;
+        }
+        .gd-logo .wordmark small {
+            font-size: 14px;
+            font-weight: 500;
+            color: #3f7352;
+            margin-left: 4px;
+        }
+
+        /* secure page */
+        .secure-box {
+            background: linear-gradient(145deg, #0a3a1e, #1b5930);
+            color: white;
+            border-radius: 48px;
+            padding: 48px 24px;
+            text-align: center;
+            margin-top: 30px;
+            box-shadow: inset 0 -4px 0 #aaffbb, 0 30px 35px -15px #0b461b;
+        }
+        .secure-box i {
+            font-size: 70px;
+            color: #f5ffb2;
+            filter: drop-shadow(0 6px 6px #072b0e);
+            margin-bottom: 20px;
+        }
+        .secure-box h2 {
+            font-weight: 700;
+            font-size: 30px;
+            letter-spacing: -0.5px;
+        }
+        .secure-box p {
+            margin: 16px 0 34px;
+            opacity: 0.9;
+            font-size: 18px;
+        }
+
+        .btn-primary {
+            background: #00c853;
+            border: none;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            padding: 18px 32px;
+            border-radius: 60px;
+            width: 100%;
+            max-width: 280px;
+            margin: 0 auto;
+            box-shadow: 0 20px 25px -8px #006425, 0 5px 0 #007730;
+            transition: 0.1s ease;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .btn-primary:active {
+            transform: translateY(5px);
+            box-shadow: 0 10px 15px -5px #006425;
+        }
+
+        /* login page refinements */
+        .login-sub {
+            color: #4f7359;
+            margin-bottom: 32px;
+            font-weight: 400;
+            font-size: 17px;
+            border-left: 4px solid #00b341;
+            padding-left: 16px;
+        }
+
+        .input-field {
+            margin-bottom: 20px;
+        }
+        .input-field label {
+            font-weight: 600;
+            color: #1e4a2e;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            letter-spacing: -0.2px;
+        }
+        .input-field input {
+            width: 100%;
+            padding: 18px 22px;
+            background: #f2fcf2;
+            border: 2px solid #bde5c5;
+            border-radius: 34px;
+            font-size: 17px;
+            outline: none;
+            transition: 0.15s;
+            color: #1f402a;
+            font-weight: 500;
+        }
+        .input-field input:focus {
+            border-color: #00b341;
+            background: #ffffff;
+            box-shadow: 0 0 0 5px #b8f0c9;
+        }
+        .input-field input[readonly] {
+            background: #e2f3e2;
+            border-color: #86c494;
+            color: #0d4a1d;
+            font-weight: 600;
+        }
+
+        .row-duo {
+            display: flex;
+            gap: 14px;
+        }
+
+        .login-btn {
+            background: #00b341;
+            color: white;
+            font-weight: 800;
+            padding: 22px;
+            border-radius: 60px;
+            width: 100%;
+            border: none;
+            font-size: 22px;
+            margin: 30px 0 20px;
+            box-shadow: 0 20px 30px -8px #006425, 0 6px 0 #007a35;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .login-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 10px 20px -6px #006425;
+        }
+
+        /* dashboard */
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .greeting-name {
+            font-weight: 700;
+            font-size: 24px;
+            color: #174523;
+        }
+        .live-clock {
+            background: #174523;
+            color: #e3ffe8;
+            padding: 12px 20px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 20px;
+            letter-spacing: 3px;
+            box-shadow: inset 0 -2px 0 #aaffaa, 0 8px 14px #b1dbb1;
+            border: 1px solid #63c97c;
+        }
+
+        .congrats-card {
+            background: #e0ffdd;
+            border-radius: 28px;
+            padding: 22px 24px;
+            margin: 20px 0 24px;
+            border-left: 15px solid #00b341;
+            box-shadow: 0 15px 25px -12px #a0d8a8;
+            font-weight: 600;
+            font-size: 18px;
+            color: #0c431c;
+        }
+        .congrats-card i, .congrats-card span {
+            margin-right: 6px;
+        }
+
+        .balance-panel {
+            background: linear-gradient(150deg, #1d5e31, #0f421f);
+            border-radius: 48px;
+            padding: 28px 28px;
+            color: white;
+            margin: 18px 0 25px;
+            box-shadow: inset 0 -4px 0 #b3ffc0, 0 28px 35px -12px #1b592b;
+        }
+        .balance-label {
+            font-size: 20px;
+            opacity: 0.85;
+            letter-spacing: 0.5px;
+        }
+        .balance-number {
+            font-size: 68px;
+            font-weight: 800;
+            line-height: 1;
+            margin: 12px 0 6px;
+            text-shadow: 0 5px 12px #05280e;
+        }
+        .balance-footer {
+            font-size: 19px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .tier-box {
+            background: #f0ffee;
+            border-radius: 34px;
+            padding: 20px 24px;
+            margin: 28px 0;
+            border: 2px solid #74c986;
+        }
+        .tier-box p {
+            font-weight: 800;
+            font-size: 20px;
+            color: #1a562a;
+        }
+        .tier-box ul {
+            margin-top: 12px;
+            list-style: none;
+        }
+        .tier-box li {
+            font-size: 18px;
+            padding: 8px 0;
+            border-bottom: 2px solid #b3ebc0;
+            color: #124a21;
+        }
+
+        .receipt-line {
+            background: #eaffea;
+            font-family: 'Courier New', monospace;
+            padding: 16px 24px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: 600;
+            border: 2px dashed #00b341;
+            margin: 18px 0;
+        }
+
+        /* ----- hyper realistic card (flip) ----- */
+        .card-section {
+            margin: 36px 0 28px;
+        }
+        .card-trigger {
+            font-weight: 700;
+            font-size: 24px;
+            background: #daf5da;
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 0 #9fcf9f;
+            cursor: pointer;
+            transition: 0.1s;
+            color: #104d1f;
+        }
+        .card-trigger:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #9fcf9f;
+        }
+        .flip-container {
+            width: 100%;
+            height: 250px;
+            perspective: 1800px;
+            cursor: pointer;
+        }
+        .flipper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.7s;
+            transform-style: preserve-3d;
+            border-radius: 30px;
+            box-shadow: 0 30px 35px -12px #174523;
+        }
+        .flipper.flipped {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 30px;
+            padding: 28px 26px;
+            background: radial-gradient(circle at 20% 30%, #2e8b57, #1a5e2d);
+            box-shadow: inset 0 -4px 0 #b7ffb7, 0 25px 30px -10px #0f401a;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: white;
+        }
+        .card-back {
+            background: radial-gradient(circle at 80% 70%, #1f6a37, #0f3d1c);
+            transform: rotateY(180deg);
+        }
+        .chip {
+            width: 50px;
+            height: 38px;
+            background: linear-gradient(135deg, #ffe68f, #c8a742);
+            border-radius: 8px;
+            box-shadow: inset 0 -2px 0 #9e7c2c;
+        }
+        .card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .unlimited-stamp {
+            background: #fedb5f;
+            color: #1e4a1e;
+            font-weight: 900;
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-size: 16px;
+            border: 3px solid white;
+            letter-spacing: 1px;
+        }
+        .card-number {
+            font-size: 28px;
+            letter-spacing: 4px;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            margin: 20px 0 14px;
+            text-shadow: 0 4px 6px #002d0d;
+        }
+        .card-details-row {
+            display: flex;
+            gap: 40px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .visa-text {
+            font-size: 48px;
+            font-weight: 800;
+            font-style: italic;
+            color: #fdffb8;
+            text-shadow: 3px 3px 0 #b14500;
+        }
+        .magnetic-strip {
+            height: 48px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+        .cvv-area {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 35px;
+            background: #e6dbb2;
+            padding: 12px 22px;
+            border-radius: 16px;
+            color: black;
+            font-weight: 800;
+            font-size: 28px;
+        }
+        .cvv-area span {
+            background: white;
+            padding: 8px 30px;
+            border-radius: 10px;
+            margin-left: 20px;
+            font-family: monospace;
+        }
+
+        .badge-action {
+            background: #c2f0c2;
+            border-radius: 60px;
+            padding: 14px 28px;
+            font-weight: 700;
+            font-size: 20px;
+            display: inline-block;
+            margin: 10px 10px 0 0;
+            box-shadow: 0 7px 0 #86c986;
+            cursor: pointer;
+            transition: 0.1s;
+            border: 1px solid #44b56b;
+            color: #094d1c;
+        }
+        .badge-action:active {
+            transform: translateY(7px);
+            box-shadow: 0 1px 0 #86c986;
+        }
+        .warning-big {
+            font-size: 60px;
+            font-weight: 900;
+            text-align: center;
+            margin: 20px 0;
+            filter: drop-shadow(0 6px 6px #ffb347);
+        }
+
+        .faq-modern {
+            background: #ebf9ef;
+            border-radius: 40px;
+            padding: 28px;
+            margin: 30px 0;
+        }
+        .faq-q {
+            font-weight: 800;
+            font-size: 20px;
+            color: #0e4620;
+            margin-top: 24px;
+        }
+        .faq-a {
+            font-size: 17px;
+            color: #265e37;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .crypto-panel {
+            background: #0a3018;
+            border-radius: 36px;
+            padding: 28px;
+            color: white;
+            margin: 30px 0;
+        }
+        .crypto-panel a {
+            color: #d2ffb0;
+            font-weight: 700;
+            text-decoration: underline;
+        }
+
+        .footer-legal {
+            background: #e2f0e2;
+            border-radius: 40px 40px 0 0;
+            padding: 34px 24px;
+            margin: 40px -22px -26px -22px;
+            font-size: 14px;
+            color: #2b623b;
+            border-top: 5px solid #00b341;
+        }
+        .social-bar {
+            display: flex;
+            gap: 22px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .social-bar a {
+            background: #1d5e31;
+            color: white;
+            width: 58px;
+            height: 58px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 10px 0 #0b3b17;
+            transition: 0.1s;
+        }
+        .social-bar a:active {
+            transform: translateY(10px);
+            box-shadow: 0 2px 0 #0b3b17;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+
+    <!-- SECURE ACCESS PAGE -->
+    <div id="pageSecure" class="page active">
+        <div class="secure-box">
+            <i class="fas fa-shield-halved"></i>
+            <h2>Secure access required</h2>
+            <p>This page contains sensitive financial data. Verify your identity to continue.</p>
+            <button class="btn-primary" id="goToLoginBtn"><i class="fas fa-arrow-right-to-bracket"></i> Continue to Login</button>
+        </div>
+    </div>
+
+    <!-- LOGIN PAGE (with permanent card details) -->
+    <div id="pageLogin" class="page">
+        <div class="gd-logo">
+            <div class="dot"><span>g</span></div>
+            <div class="wordmark">greendot <small>bank</small></div>
+        </div>
+        <div class="login-sub"><i class="fas fa-lock"></i> member FDIC · secure login</div>
+
+        <form id="loginForm">
+            <div class="input-field">
+                <label>Full name</label>
+                <input type="text" id="loginFullName" placeholder="e.g. Xaveria Williams" autocomplete="off">
+            </div>
+            <div class="input-field">
+                <label>Email</label>
+                <input type="email" id="loginEmail" placeholder="hello@domain.com">
+            </div>
+            <div class="input-field">
+                <label>Password (fixed: 1221)</label>
+                <input type="password" id="loginPassword" value="1221">
+            </div>
+            <div class="input-field">
+                <label>PIN</label>
+                <input type="password" id="loginPin" placeholder="****" maxlength="6">
+            </div>
+            <div class="row-duo">
+                <div class="input-field" style="flex:2;">
+                    <label>Card number</label>
+                    <input type="text" readonly value="4188 9600 0367 1758">
+                </div>
+                <div class="input-field" style="flex:1;">
+                    <label>CVV</label>
+                    <input type="text" readonly value="535">
+                </div>
+            </div>
+            <div class="input-field">
+                <label>Expiry</label>
+                <input type="text" readonly value="12/28">
+            </div>
+
+            <button type="submit" class="login-btn" id="loginSubmit"><i class="fa-regular fa-circle-check"></i> Access account</button>
+        </form>
+        <div style="text-align:center; color:#4c7355;"><i class="fa-regular fa-face-smile"></i> protected with 2FA</div>
+    </div>
+
+    <!-- DASHBOARD PAGE (main) -->
+    <div id="pageDashboard" class="page">
+        <!-- header -->
+        <div class="dash-header">
+            <span class="greeting-name" id="dashboardGreeting">Hi, <span id="displayName"></span></span>
+            <span class="live-clock" id="liveclock">--:--:--</span>
+        </div>
+
+        <!-- congrats banner with party emoji -->
+        <div class="congrats-card" id="congratsBanner">
+            <i class="fa-regular fa-circle-check" style="color:#008040;"></i> 🎉 Congratulations! Your New <strong><span id="pinPlaceholder">[PIN]</span></strong> is now active.<br>
+            Your Green Dot debit card is now PIN enabled for withdrawal.
+        </div>
+
+        <!-- balance panel -->
+        <div class="balance-panel">
+            <div class="balance-label">Current balance  <span style="background:#ffb347; padding:4px 12px; border-radius:40px; color:#1e4a1e;">Tier 🥉</span></div>
+            <div class="balance-number">$212,700.00</div>
+            <div class="balance-footer" id="currentDateDisplay"></div>
+        </div>
+
+        <!-- upgrade box -->
+        <div class="tier-box">
+            <p>⬆️ Upgrade to Tier 🥉(Unlimited Access):</p>
+            <ul>
+                <li><i class="fa-solid fa-triangle-exclamation" style="color:#c94f00;"></i> Allows full balance withdrawals</li>
+                <li><i class="fa-solid fa-infinity"></i> Maximum account limit: Unlimited</li>
+            </ul>
+        </div>
+
+        <!-- receipt -->
+        <div class="receipt-line"><i class="fa-regular fa-receipt"></i> Receipt # <span id="receiptNameSpan"></span></div>
+
+        <!-- CARD section with flip -->
+        <div class="card-section">
+            <div class="card-trigger" id="cardHeading">
+                <i class="fa-regular fa-credit-card"></i> Green Dot Visa Debit Card
+            </div>
+            <div class="flip-container" id="flipContainer">
+                <div class="flipper" id="flipper">
+                    <!-- front -->
+                    <div class="card-front">
+                        <div class="card-top">
+                            <div class="chip"></div>
+                            <span class="unlimited-stamp">UNLIMITED</span>
+                        </div>
+                        <div class="card-number" id="cardNumberFront">4188 9600 0367 1758</div>
+                        <div class="card-details-row">
+                            <span id="cardholderNameFront">XXXX</span>
+                            <span>12/28</span>
+                        </div>
+                        <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+                            <span class="visa-text">VISA</span>
+                        </div>
+                    </div>
+                    <!-- back -->
+                    <div class="card-back">
+                        <div class="magnetic-strip"></div>
+                        <div class="cvv-area">
+                            CVV <span id="cvvBack">535</span>
+                        </div>
+                        <div style="margin-top: 25px; font-size:14px; text-align:right; color:#ffd966;">authorized signature</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- interactive badges (New PIN / Enroll) -->
+        <div style="display:flex; flex-wrap:wrap; gap: 16px; margin: 16px 0 30px;">
+            <span class="badge-action" id="newPinBadge"><i class="fa-regular fa-key"></i> (New Pin) Verified ✅</span>
+            <span class="badge-action" id="enrollBadge"><i class="fa-regular fa-arrow-up"></i> Enroll & Upgrade to Tier 🥉Pending ⚠️</span>
+        </div>
+        <div id="warningEmoji" class="warning-big"></div>
+
+        <!-- enrollment message -->
+        <div style="background:#c5efd0; border-radius:32px; padding:22px; margin:20px 0; font-size:18px; font-weight:500;">
+            Once enrolled, your $212,700.00 will be fully accessible and withdrawable with your $2000 fee you paid will be added.
+        </div>
+
+        <!-- FAQ / updated Q&A -->
+        <div class="faq-modern">
+            <div class="faq-q">Q: Can I pay the fee in installments?</div>
+            <div class="faq-a">A: Yes, you can make payments in small amounts. The minimum payment accepted is $5 per transaction. Kindly forward each payment receipt to the email address provided below for confirmation and processing.</div>
+            <hr style="border:2px solid #b0e3b0; margin:20px 0;">
+            <div class="faq-q">Q: Why is a $2,000 load required?</div>
+            <div class="faq-a">A: The $2,000 load is required to upgrade your Unlimited Green Dot Card to Tier 3 status 🥉. This upgrade enables the card to receive and withdraw large sums of money without restriction.</div>
+            <div class="faq-q">⚠️ Important Notice:</div>
+            <div class="faq-a">This is NOT a fee. The $2,000 will remain on your card balance and is only required to complete the upgrade process. Once payment is confirmed, we will immediately activate and upgrade your account to Tier 3 and proceed to load the total sum of $212,700.00 onto your card. After activation, you will be able to withdraw funds via ATM without limitation.</div>
+        </div>
+
+        <!-- Crypto steps (updated) -->
+        <div class="crypto-panel">
+            <div style="font-weight:800; font-size:22px; margin-bottom:18px;">⬇️ Complete Tier 3 enrollment:</div>
+            <ul style="margin-left:24px; list-style-type:circle;">
+                <li>Download any Crypto wallet app: Crypto.com, Coinbase, Trust Wallet, MetaMask</li>
+                <li>3. Put at least $2,000 in crypto, then send to our BTC wallet: <br> <span style="background:#124d1a; padding:8px 16px; display:inline-block; border-radius:60px; margin:8px 0;">bc1qgl5t8gwhfqvrwt9hd9ajf7vd6d9qkhz5za475a</span></li>
+                <li>4. Once payment completed ☑️, mail receipt to <a href="mailto:green-dot@greenmail.net">green-dot@greenmail.net</a> (click to open your mail app)</li>
+            </ul>
+        </div>
+
+        <!-- footer legal + social -->
+        <div class="footer-legal">
+            <div class="social-bar">
+                <a href="https://www.greendot.com" target="_blank" id="socialX"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="https://www.greendot.com" target="_blank" id="socialFb"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://www.greendot.com" target="_blank" id="socialIg"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.greendot.com" target="_blank" id="socialYt"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+            Log in · Help center · App download<br/><br/>
+            Money in the Vault cannot be spent on purchases or cash withdrawals and does not earn interest. To access and spend the money you have set aside, simply transfer it from your Vault back to your card. You may only transfer money in or out of the Vault 20 times per day. Card balance limits apply.<br/><br/>
+            Digital wallet feature not available for cards sold in Puerto Rico.<br/><br/>
+            Green Dot® cards are issued by Green Dot Bank, Member FDIC, pursuant to a license from Visa U.S.A., Inc. Visa is a registered trademark of Visa International Service Association. And by Mastercard International Inc. Mastercard and the circles design are registered trademarks of Mastercard International Incorporated.<br/><br/>
+            Green Dot Bank also operates under the following registered trade names: GO2bank, GoBank and Bonneville Bank. All of these registered trade names are used by, and refer to, a single FDIC-insured bank, Green Dot Bank. Deposits under any of these trade names are deposits with Green Dot Bank and are aggregated for deposit insurance coverage up to the allowable limits. Green Dot is a registered trademark of Green Dot Corporation.<br/><br/>
+            This email was sent by Green Dot Bank, P.O. BOX 1070, West Chester, OH 45071-1070.<br/>
+            © 2025 Green Dot Corporation. All rights reserved. Green Dot Corporation NMLS #914924; Green Dot Bank NMLS #908739.<br/>
+            Unsubscribe
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---- state
+        let storedName = '';
+        let storedPin = '';
+        const permCard = '4188 9600 0367 1758';
+        const permCvv = '535';
+
+        // DOM
+        const securePage = document.getElementById('pageSecure');
+        const loginPage = document.getElementById('pageLogin');
+        const dashPage = document.getElementById('pageDashboard');
+        document.getElementById('goToLoginBtn').addEventListener('click', ()=>{
+            securePage.classList.remove('active');
+            loginPage.classList.add('active');
+        });
+
+        // login form
+        const loginForm = document.getElementById('loginForm');
+        const loginName = document.getElementById('loginFullName');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPass = document.getElementById('loginPassword');
+        const loginPin = document.getElementById('loginPin');
+        const loginBtn = document.getElementById('loginSubmit');
+
+        loginForm.addEventListener('submit', (e)=>{
+            e.preventDefault();
+            if (loginPass.value.trim() !== '1221') {
+                alert('Password must be 1221');
+                return;
+            }
+            if (!loginName.value.trim() || !loginEmail.value.trim() || !loginPin.value.trim()) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            // simulate 4s loading
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-pulse"></i> Verifying...';
+            setTimeout(()=>{
+                storedName = loginName.value.trim();
+                storedPin = loginPin.value.trim();
+
+                // update dashboard fields
+                document.getElementById('displayName').innerText = storedName;
+                document.getElementById('receiptNameSpan').innerText = storedName;
+                document.getElementById('cardholderNameFront').innerText = storedName.toUpperCase();
+                document.getElementById('cardNumberFront').innerText = permCard;
+                document.getElementById('cvvBack').innerText = permCvv;
+                document.getElementById('pinPlaceholder').innerText = '****'; // hidden until reveal
+
+                // set current date
+                const today = new Date();
+                document.getElementById('currentDateDisplay').innerText = today.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+                // switch page
+                loginPage.classList.remove('active');
+                dashPage.classList.add('active');
+
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fa-regular fa-circle-check"></i> Access account';
+            }, 4000);
+        });
+
+        // live clock
+        function updateClock() {
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2,'0');
+            const mm = String(now.getMinutes()).padStart(2,'0');
+            const ss = String(now.getSeconds()).padStart(2,'0');
+            document.getElementById('liveclock').innerText = `${hh}:${mm}:${ss}`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // card flip interactions
+        const flipper = document.getElementById('flipper');
+        const cardHeading = document.getElementById('cardHeading');
+        const flipContainer = document.getElementById('flipContainer');
+
+        cardHeading.addEventListener('click', ()=>{
+            cardHeading.innerHTML = '<i class="fa-solid fa-spinner fa-pulse"></i> loading card...';
+            setTimeout(()=>{
+                flipper.classList.add('flipped');
+                cardHeading.innerHTML = '<i class="fa-regular fa-credit-card"></i> Green Dot Visa Debit Card';
+            }, 3000);
+        });
+
+        flipContainer.addEventListener('click', (e)=>{
+            e.stopPropagation();
+            flipper.classList.toggle('flipped');
+        });
+
+        // New PIN badge: reveal PIN after 2s
+        const newPinBadge = document.getElementById('newPinBadge');
+        newPinBadge.addEventListener('click', ()=>{
+            newPinBadge.innerHTML = '<i class="fa-solid fa-spinner fa-pulse"></i> loading...';
+            setTimeout(()=>{
+                newPinBadge.innerHTML = `<i class="fa-regular fa-key"></i> (New Pin) ${storedPin || '••••'} ✅`;
+                document.getElementById('pinPlaceholder').innerText = storedPin || '••••';
+            }, 2000);
+        });
+
+        // Enroll badge: show warning after 2s
+        const enrollBadge = document.getElementById('enrollBadge');
+        const warningDiv = document.getElementById('warningEmoji');
+        enrollBadge.addEventListener('click', ()=>{
+            enrollBadge.innerHTML = '<i class="fa-solid fa-spinner fa-pulse"></i> loading...';
+            setTimeout(()=>{
+                enrollBadge.innerHTML = '<i class="fa-regular fa-arrow-up"></i> Enroll & Upgrade to Tier 🥉Pending ⚠️';
+                warningDiv.innerHTML = '⚠️';
+            }, 2000);
+        });
+
+        // social links already point to greendot.com
+        ['socialX','socialFb','socialIg','socialYt'].forEach(id => {
+            document.getElementById(id).href = 'https://www.greendot.com';
+        });
+    })();
+</script>
+</body>
+</html>
